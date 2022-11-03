@@ -9,7 +9,7 @@ import UIKit
 
 class DonMagSampleCollectionViewCell: UICollectionViewCell {
     
-	@IBOutlet weak var myLabel: UILabel!
+	@IBOutlet var myLabel: UILabel!
 	
 	override func awakeFromNib() {
 		super.awakeFromNib()

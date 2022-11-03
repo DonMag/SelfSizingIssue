@@ -8,8 +8,9 @@
 import UIKit
 
 class DonMagTitleCollectionView: UICollectionView, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-	
-	var items = ["this", "is", "example", "for", "some", "data", "in", "array"]
+
+	// use var so we can set the data from the controller
+	var items: [String] = ["this", "is", "example", "for", "some", "data", "in", "array"]
 	
 	init() {
 		let flowLayout = UICollectionViewFlowLayout()
@@ -39,13 +40,16 @@ class DonMagTitleCollectionView: UICollectionView, UICollectionViewDelegate, UIC
 		allowsMultipleSelection = false
 		
 		backgroundColor = .systemOrange
-		
-		// set first cell as initially selected
-		self.selectItem(at: IndexPath(item: 0, section: 0), animated: false, scrollPosition: .left)
 	}
 	
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
+	}
+	
+	override func didMoveToSuperview() {
+		super.didMoveToSuperview()
+		// if we want to "pre-Select" a cell
+		self.selectItem(at: IndexPath(item: 0, section: 0), animated: false, scrollPosition: .left)
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -65,7 +69,6 @@ class DonMagTitleCollectionView: UICollectionView, UICollectionViewDelegate, UIC
 	
 	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 		// do something on cell selection?
-		print("Selected item at:", indexPath)
 	}
 	
 }

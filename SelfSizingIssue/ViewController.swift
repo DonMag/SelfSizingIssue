@@ -9,32 +9,56 @@ import UIKit
 
 class ViewController: UIViewController {
 
-	@IBOutlet weak var containerView: UIView!
-	
-	@IBOutlet weak var myContainerView: UIView!
+	@IBOutlet var containerView: UIView!
+	@IBOutlet var myContainerView: UIView!
 
+	@IBOutlet var infoLabel: UILabel!
+	
+	let collectionView = AdaptiveTitleCollectionView()
+	let dmCollectionView = DonMagTitleCollectionView()
+	
 	override func viewDidLoad() {
         super.viewDidLoad()
 
+		// let's use a longer array of items
+		//	so we have a better example of cell scrolling
 		let items: [String] = [
 			"this", "Sunday", "is", "Monday", "example", "Tuesday", "for", "Wednesday", "some", "Thursday", "data", "Friday", "in", "Saturday"
 		]
 
-        let collectionView = AdaptiveTitleCollectionView()
-		let myCollectionView = DonMagTitleCollectionView()
-
 		collectionView.items = items
-		myCollectionView.items = items
+		dmCollectionView.items = items
 
         containerView.addSubview(collectionView)
         collectionView.bindMarginsToSuperview()
 		
-		myContainerView.addSubview(myCollectionView)
-		myCollectionView.bindMarginsToSuperview()
+		myContainerView.addSubview(dmCollectionView)
+		dmCollectionView.bindMarginsToSuperview()
         
         // Do any additional setup after loading the view.
     }
 
+	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+		var s = "Tap to get selected indexPaths:\n\n"
+		if let selPath = collectionView.indexPathsForSelectedItems {
+			if selPath.isEmpty {
+				s += "collectionView has NO selected item(s)!"
+				s += "\n"
+				s += "selectedIndexPath property: \(collectionView.selectedIndexPath)"
+			} else {
+				s += "collectionView selected items: \(selPath)"
+			}
+		}
+		s += "\n\n"
+		if let selPath = dmCollectionView.indexPathsForSelectedItems {
+			if selPath.isEmpty {
+				s += "dmCollectionView has NO selected item(s)!"
+			} else {
+				s += "dmCollectionView selected items: \(selPath)"
+			}
+		}
+		infoLabel.text = s
+	}
 
 }
 
@@ -64,112 +88,4 @@ extension UIView {
         self.bottomAnchor.constraint(equalTo: superview.bottomAnchor, constant: insets.bottom).isActive = true
     }
 }
-
-class MyLabelCell: UICollectionViewCell {
-	
-	let myLabel: UILabel = UILabel()
-	
-	override init(frame: CGRect) {
-		super.init(frame: frame)
-		commonInit()
-	}
-	required init?(coder: NSCoder) {
-		super.init(coder: coder)
-		commonInit()
-	}
-	func commonInit() {
-		myLabel.textColor = .black
-		myLabel.textAlignment = .center
-		myLabel.font = .systemFont(ofSize: 16.0)
-		myLabel.translatesAutoresizingMaskIntoConstraints = false
-		contentView.addSubview(myLabel)
-		
-		let g = contentView
-		NSLayoutConstraint.activate([
-			
-			myLabel.topAnchor.constraint(equalTo: g.topAnchor, constant: 5.0),
-			myLabel.leadingAnchor.constraint(equalTo: g.leadingAnchor, constant: 5.0),
-			myLabel.trailingAnchor.constraint(equalTo: g.trailingAnchor, constant: -5.0),
-			myLabel.bottomAnchor.constraint(equalTo: g.bottomAnchor, constant: -5.0),
-
-			
-		])
-		
-		myLabel.backgroundColor = .green
-		contentView.backgroundColor = .red
-	}
-	
-	
-	override var isSelected: Bool {
-		didSet {
-			myLabel.backgroundColor = isSelected ? .yellow : .green
-		}
-	}
-	
-}
-
-class MyTitleCollectionView: UICollectionView, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-	
-	var items = ["this", "Monday", "is", "example", "Tuesday", "for", "some", "Wednesday", "data", "in", "Thursday", "array"]
-	
-	init() {
-		let flowLayout = UICollectionViewFlowLayout()
-
-		// use a reasonable estimated size
-		//flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
-		flowLayout.estimatedItemSize = CGSize(width: 100.0, height: 24.0)
-		
-		flowLayout.scrollDirection = .horizontal
-		
-		flowLayout.sectionInset = .init(top: 16, left: 8, bottom: 16, right: 8)
-		flowLayout.sectionInsetReference = .fromContentInset
-		
-		flowLayout.minimumLineSpacing = 5
-		flowLayout.minimumInteritemSpacing = 5
-		
-		super.init(frame: .zero, collectionViewLayout: flowLayout)
-		
-		register(UINib(nibName: "SampleCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "SampleCollectionViewCell")
-		register(MyLabelCell.self, forCellWithReuseIdentifier: "MyCell")
-		
-		delegate = self
-		dataSource = self
-		
-		contentInset = .zero
-		delaysContentTouches = true
-		
-		allowsMultipleSelection = false
-	
-		backgroundColor = .systemOrange
-
-		// set first cell as initially selected
-		self.selectItem(at: IndexPath(item: 0, section: 0), animated: false, scrollPosition: .left)
-	}
-	
-	required init?(coder: NSCoder) {
-		fatalError("init(coder:) has not been implemented")
-	}
-	
-	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-		return items.count
-	}
-	
-	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
-		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SampleCollectionViewCell", for: indexPath) as! SampleCollectionViewCell
-		
-		let item = items[indexPath.item]
-		cell.myLabel.text = item
-
-		return cell
-		
-	}
-	
-	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-		// do something on cell selection?
-	}
-	
-}
-
-
 

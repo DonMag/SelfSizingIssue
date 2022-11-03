@@ -9,6 +9,7 @@ import UIKit
 
 class AdaptiveTitleCollectionView: UICollectionView, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 	
+	// use var so we can set the data from the controller
 	var items = ["this", "is", "example", "for", "some", "data", "in", "array"]
 	var selectedIndexPath: IndexPath = .init(item: 0, section: 0)
 	
